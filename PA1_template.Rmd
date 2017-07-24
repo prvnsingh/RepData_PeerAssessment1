@@ -1,14 +1,12 @@
 ---
 title: "Reproducible Research: Peer Assessment 1"
 output: html_document
-keep_md: true
 ---
 
-
 ## Loading and preprocessing the data
-```{r}
-#loading the data
+```{r, echo= TRUE, cache=TRUE}
 setwd("~/GitHub/RepData_PeerAssessment1")
+#loading the data
 activity <- read.csv(unzip("activity.zip"))
 
 #processing the data
@@ -18,10 +16,11 @@ activity$interval <- as.factor(activity$interval)
 ```
 
 ## What is mean total number of steps taken per day?
-```{r}
+```{r, echo= TRUE, cache=TRUE}
 #histogram of the total number of steps taken each day
 steps_day <- aggregate(steps~date,activity,sum, na.rm = TRUE)
-hist(steps_day$steps, main = "mean total number of steps taken per day", xlab = "mean steps per day", breaks = 50)
+
+plot(steps_day$date,steps_day$steps,las = 2, type = "h",main = "mean total number of steps taken per day", ylab = "mean steps per day", xlab = "Dates" )
 
 #calculating mean and median
 stpmean <- mean(steps_day$steps, na.rm = TRUE)
@@ -32,10 +31,9 @@ stpmedian <- median(steps_day$steps, na.rm = TRUE)
 ```
 
 ## What is the average daily activity pattern?
-```{r}
+```{r, echo=TRUE,cache=TRUE}
 #loading ggplot2 library for plotting
 library(ggplot2)
-
 #aggregation of steps by intervals of 5-minutes
 act_intl<-activity
 #act_intl$interval <- as.list(act_intl$interval)
@@ -51,7 +49,7 @@ act_intl$interval <- as.numeric(levels(act_intl$interval)[act_intl$interval])
 print(paste("The interval",max_step$interval,"has maximum number of steps that is ", max_step$steps))
 ```
 ## Imputing missing values
-```{r}
+```{r, echo= TRUE,cache=TRUE}
 #Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)
 t <- table(is.na(activity))
 print(paste("total number of missing values = ",t[2]))
@@ -64,7 +62,8 @@ activity2$steps[nas] <- avg_interval[as.character(activity2$interval[nas])]
 
 #histogram of the total number of steps taken each day 
 steps_day2 <- aggregate(steps~date,activity2,sum, na.rm = TRUE)
-hist(steps_day2$steps, main = "mean total number of steps taken per day", xlab = "mean steps per day", breaks = 50)
+
+plot(steps_day2$date,steps_day2$steps,las = 2, type = "h",main = "mean total number of steps taken per day", ylab = "mean steps per day", xlab = "Dates" )
 
 #comparison of mean and median total number of steps taken per day with (data  = steps_day) and without NA(steps_day2)
 summary(steps_day)
@@ -72,8 +71,7 @@ summary(steps_day2)
 ```
 
 ## Are there differences in activity patterns between weekdays and weekends?
-```{r}
-
+```{r, echo= TRUE, cache=TRUE}
 #new factor variable in the dataset with two levels -- "weekday" and "weekend" indicating whether a given date is a weekday or weekend day
 activity2$weekd <- weekdays(activity2$date)
 activity2$weekd <- ifelse( activity2$weekd %in% c("Saturday","Sunday"),"weekend","weekday")
